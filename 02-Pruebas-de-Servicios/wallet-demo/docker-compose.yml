@@ -1,0 +1,85 @@
+services:
+  # --- FRONTEND (React App) ---
+  frontend:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./:/app
+      # Creamos un volumen anónimo para node_modules para evitar conflictos
+      # entre el sistema operativo anfitrión y el contenedor Linux.
+      - /app/node_modules
+    # Instalamos dependencias y levantamos Vite exponiendo el host
+    command: sh -c "npm install && npm run dev -- --host"
+    ports:
+      - "5173:5173"
+    networks:
+      - wallet-net
+
+  # --- MICROSERVICIOS (Node.js) ---
+  
+  auth-ms:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./auth-service:/app
+      - ./config.json:/app/config.json
+    command: sh -c "npm install && node index.js"
+    ports:
+      - "4001:3000"
+    networks:
+      - wallet-net
+
+  wallet-ms:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./wallet-service:/app
+      - ./config.json:/app/config.json
+    command: sh -c "npm install && node index.js"
+    ports:
+      - "4002:3000"
+    networks:
+      - wallet-net
+
+  transaction-ms:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./transaction-service:/app
+      - ./config.json:/app/config.json
+    command: sh -c "npm install && node index.js"
+    ports:
+      - "4003:3000"
+    depends_on:
+      - wallet-ms
+    networks:
+      - wallet-net
+
+  # --- BASES DE DATOS ---
+  postgres-auth:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_PASSWORD: password_local_admin
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+    networks:
+      - wallet-net
+
+  postgres-wallet:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_DB: wallet_db
+      POSTGRES_PASSWORD: password_local_admin
+    volumes:
+      - wallet_data:/var/lib/postgresql/data
+    networks:
+      - wallet-net
+
+networks:
+  wallet-net:
+    driver: bridge
+
+volumes:
+  auth_data:
+  wallet_data:

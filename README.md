@@ -1,33 +1,36 @@
-# 🚀 QA Innovation Lab Bootcamp - NTT Data
+# 🚀 Portafolio QA Automation Engineer | NTT Data Innovation Lab
 
-¡Bienvenido a mi repositorio! Aquí documento todo mi proceso de aprendizaje, apuntes, prácticas y proyectos realizados durante el **Bootcamp de Quality Assurance (QA) de NTT Data**. 
+Bienvenido a mi portafolio de **Aseguramiento de la Calidad (QA)**. Este repositorio documenta mis conocimientos técnicos, metodologías aplicadas y entregables desarrollados durante mi especialización intensiva en el **Bootcamp de Quality Assurance de NTT Data**.
 
-Este repositorio sirve como bitácora personal y portafolio para demostrar los conocimientos técnicos y metodológicos adquiridos en el ciclo de vida de pruebas de software, desde las bases de programación hasta la automatización.
+Aquí expongo mi capacidad para transitar desde el análisis profundo de requerimientos corporativos y diseño de pruebas manuales estructuradas, hasta la implementación de frameworks de automatización robustos para APIs y aplicaciones Web.
 
-## 📚 Estructura del Bootcamp
+## 🛠️ Stack Tecnológico y Dominio Técnico
 
-El programa formativo estuvo dividido en 4 módulos principales. Puedes explorar el contenido, resúmenes y ejercicios prácticos haciendo clic en cada carpeta:
+*   **Lenguajes de Programación:** Java, JavaScript.
+*   **Automatización Web E2E:** Selenium WebDriver, Page Object Model (POM).
+*   **Automatización de API REST & SOAP:** Karate Framework (BDD), Postman (Pruebas con JavaScript).
+*   **Metodologías de Testing:** BDD (Gherkin), ISTQB, Shift-Left Testing, Diseño de Caja Negra (Valores Frontera, Equivalencia).
+*   **Documentación y Contratos:** Swagger / OpenAPI, JSON, YAML.
+*   **Entornos y Herramientas:** Docker, Maven, Git.
 
-* ☕ **[01. Pruebas Funcionales](./01-Pruebas-Funcionales)**
-  * Fundamentos del lenguaje, Programación Orientada a Objetos (POO), estructuras de datos y buenas prácticas de código.
-* 📋 **[02.  Pruebas de Servicios](./02-Pruebas-de-Servicios)**
-  * Fundamentos de testing, diseño de casos de prueba, reporte de bugs, ciclo de vida del software y metodologías (incluyendo sintaxis Gherkin/BDD).
-* 🔌 **[03. Programación en Java](./03-Programacion-en-Java)**
-  * Testing de APIs (REST), validación de respuestas, códigos de estado HTTP y automatización de peticiones.
-* 🤖 **[04. Pruebas Automatizadas](./04-Pruebas-Automatizadas)**
-  * Frameworks de automatización, patrones de diseño (como Page Object Model) y ejecución de scripts para pruebas End-to-End (E2E).
+## 📂 Organización del Portafolio
 
-## 🛠️ Tecnologías y Herramientas
+El repositorio está dividido en los 4 pilares fundamentales de mi formación como QA. Cada directorio contiene la justificación técnica y el código real que evidencia mi trabajo:
 
-Durante el bootcamp, trabajé con diversas tecnologías para asegurar la calidad del software. *(Nota: Iremos actualizando esta lista con los badges a medida que subamos los proyectos)*:
+| Módulo | Descripción | Herramientas / Conceptos Clave |
+| :--- | :--- | :--- |
+| [**01. Pruebas Funcionales**](./01-Pruebas-Funcionales) | Diseño de casos de prueba, aplicación de metodologías formales de testing y redacción de requerimientos de negocio con BDD. | `ISTQB`, `Gherkin`, `Caja Negra` |
+| [**02. Pruebas de Servicios (API)**](./02-Pruebas-de-Servicios) | Análisis de contratos API, validaciones HTTP, manejo de payloads (JSON/XML) y pruebas de integración. | `Postman`, `Swagger`, `REST`, `SOAP` |
+| [**03. Programación en Java**](./03-Programacion-en-Java) | Lógica de programación algorítmica y Programación Orientada a Objetos para construir frameworks de automatización sólidos. | `Java`, `POO`, `Encapsulamiento` |
+| [**04. Pruebas Automatizadas**](./04-Pruebas-Automatizadas) | Implementación E2E sobre web y backend. Uso de frameworks escalables respetando patrones de diseño como Page Object Model. | `Selenium`, `Karate`, `Maven`, `POM` |
 
-- **Lenguajes:** Java
-- **Testing & Automatización:** [Añadiremos Selenium, Cypress, JUnit, etc. según corresponda]
-- **API Testing:** [Añadiremos Postman, Appium, etc.]
-- **Gestión y Metodologías:** BDD (Gherkin), Intellij / Xray / Zephyr
+## 🎯 Mi Enfoque como Quality Assurance (QA)
 
-## 👨‍💻 Sobre el Autor
+No construyo suites de automatización de forma indiscriminada ni me limito a "buscar bugs" al final del ciclo. Mi filosofía es garantizar la **entrega de valor técnico y de negocio**:
+1. Implementando **Shift-Left Testing** para blindar la calidad desde la definición del requerimiento.
+2. Estandarizando el diseño de pruebas (*Data-Driven*).
+3. Maximizando la mantenibilidad del código en las suites con metodologías limpias (DRY, SOLID).
 
-**Rómulo Palacios** *Estudiante de Ingeniería en Tecnologías de la Información | Entusiasta del Desarrollo y Aseguramiento de Calidad (QA)*
-
-Puedes ver más de mis proyectos en mi perfil de GitHub: [@romulopalacios](https://github.com/romulopalacios)
+---
+**Rómulo Palacios** | *Ingeniería en Tecnologías de la Información*  
+[Perfil de GitHub](https://github.com/romulopalacios)

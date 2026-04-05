@@ -1,0 +1,192 @@
+{
+	"info": {
+		"_postman_id": "f2a1b3c4-d5e6-7f8a-9b0c-1d2e3f4a5b6c",
+		"name": "Wallet Digital API",
+		"description": "Colección completa con endpoints de Auth (incluyendo directorio), Wallet y Transacciones.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Auth Service (4001)",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"111222333\",\n    \"fullName\": \"Nuevo Usuario\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4001/v1/register",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4001",
+							"path": ["v1", "register"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login (Set Token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if(jsonData.token) {",
+									"    pm.environment.set(\"token\", jsonData.token);",
+									"    console.log(\"Token updated\");",
+									"}",
+                                    "if(jsonData.user && jsonData.user.id) {",
+									"    pm.environment.set(\"myUserId\", jsonData.user.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"999888777\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4001/v1/login",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4001",
+							"path": ["v1", "login"]
+						}
+					},
+					"response": []
+				},
+                {
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4001/v1/users",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4001",
+							"path": ["v1", "users"]
+						},
+                        "description": "Recupera la lista de usuarios (IDs, teléfonos) para saber a quién transferir."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Wallet Service (4002)",
+			"item": [
+				{
+					"name": "Get My Balance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "http://localhost:4002/v1/balance",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4002",
+							"path": ["v1", "balance"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Transactions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "http://localhost:4002/v1/transactions",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4002",
+							"path": ["v1", "transactions"]
+						}
+					},
+					"response": []
+				},
+                {
+					"name": "Deposit Money (Load Balance)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+                            { "key": "Content-Type", "value": "application/json" }
+						],
+                        "body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 500.00\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4002/v1/deposit",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4002",
+							"path": ["v1", "deposit"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Transaction Service (4003)",
+			"item": [
+				{
+					"name": "Execute Transfer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"recipientId\": \"u2\",\n    \"amount\": 25.50,\n    \"description\": \"Pago de cena\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4003/v1/transfer",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "4003",
+							"path": ["v1", "transfer"]
+						},
+						"description": "Envía dinero desde el usuario del Token hacia el recipientId."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+        {
+			"key": "myUserId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

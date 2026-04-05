@@ -1,0 +1,5 @@
+{
+  "name": "Billetera Digital Enterprise",
+  "description": "Plataforma de pagos digitales con arquitectura de microservicios.",
+  "requestFramePermissions": []
+}

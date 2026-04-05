@@ -1,0 +1,385 @@
+openapi: 3.0.3
+info:
+  title: Plataforma de Pagos - API
+  description: |
+    Especificación OpenAPI 3.0 basada en la captura de "Documentación API" (v1.0.0).
+    Incluye endpoints de Auth Service, Wallet Service y Transaction Service.
+  version: "1.0.0"
+
+tags:
+  - name: Auth Service
+    description: Registro, autenticación y listado público de usuarios.
+  - name: Wallet Service
+    description: Operaciones de billetera (saldo, depósitos e historial).
+  - name: Transaction Service
+    description: Transferencias entre usuarios.
+
+# Requiere configuración por defecto
+security:
+  - bearerAuth: []
+
+servers:
+  - url: http://localhost:4001
+    description: Auth Service
+  - url: http://localhost:4002
+    description: Wallet Service
+  - url: http://localhost:4003
+    description: Transaction Service
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: u1
+        name:
+          type: string
+          example: Ana Admin
+        phone:
+          type: string
+          example: "999888777"
+      required: [id, name, phone]
+
+    RegisterRequest:
+      type: object
+      properties:
+        phone:
+          type: string
+          description: Teléfono del usuario.
+          example: "999888777"
+        fullName:
+          type: string
+          description: Nombre completo del usuario.
+          example: "Ana Admin"
+      required: [phone, fullName]
+
+    LoginRequest:
+      type: object
+      properties:
+        phone:
+          type: string
+          description: Teléfono del usuario.
+          example: "999888777"
+      required: [phone]
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT para consumir endpoints protegidos.
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        user:
+          $ref: "#/components/schemas/User"
+      required: [token, user]
+
+    BalanceResponse:
+      type: object
+      properties:
+        balance:
+          type: number
+          format: double
+          example: 1500.0
+        currency:
+          type: string
+          example: USD
+      required: [balance, currency]
+
+    DepositRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: double
+          example: 100.0
+      required: [amount]
+
+    DepositResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        newBalance:
+          type: number
+          format: double
+          example: 1600.0
+      required: [success, newBalance]
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "tx_123"
+        amount:
+          type: number
+          format: double
+          example: 100.0
+        type:
+          type: string
+          description: Tipo de transacción.
+          example: INCOME
+        description:
+          type: string
+          nullable: true
+          example: "Nota..."
+      required: [id, amount, type]
+
+    TransferRequest:
+      type: object
+      properties:
+        recipientId:
+          type: string
+          description: ID del receptor.
+          example: u2
+        amount:
+          type: number
+          format: double
+          example: 50.0
+        description:
+          type: string
+          description: Descripción opcional.
+          nullable: true
+          example: "Pago de almuerzo"
+      required: [recipientId, amount]
+
+    TransferResponse:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          example: "tx_456"
+        status:
+          type: string
+          example: COMPLETED
+      required: [transactionId, status]
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Token inválido"
+      required: [message]
+
+paths:
+  /v1/users:
+    get:
+      tags: [Auth Service]
+      summary: Lista pública de usuarios
+      description: Retorna lista pública de usuarios registrados para facilitar búsqueda de destinatarios.
+      servers:
+        - url: http://localhost:4001
+          description: Auth Service
+      security: []
+      responses:
+        "200":
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+              examples:
+                ok:
+                  value:
+                    - id: u1
+                      name: Ana Admin
+                      phone: "999888777"
+                    - id: u2
+                      name: Juan Usuario
+                      phone: "999111222"
+
+  /v1/register:
+    post:
+      tags: [Auth Service]
+      summary: Registrar usuario (público)
+      description: Endpoint público. Registra usuario en base de datos. Retorna error si ya existe el teléfono.
+      servers:
+        - url: http://localhost:4001
+          description: Auth Service
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: Usuario creado exitosamente
+        "409":
+          description: El usuario ya existe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                exists:
+                  value:
+                    message: "El usuario ya existe"
+
+  /v1/login:
+    post:
+      tags: [Auth Service]
+      summary: Login por celular
+      description: Autentica al usuario por celular. Retorna JWT necesario para otros endpoints.
+      servers:
+        - url: http://localhost:4001
+          description: Auth Service
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Token y datos del usuario
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                notFound:
+                  value:
+                    message: "Usuario no encontrado"
+
+  /v1/balance:
+    get:
+      tags: [Wallet Service]
+      summary: Obtener saldo
+      description: |
+        Obtiene el saldo del usuario autenticado.
+        La identidad se extrae del Token JWT (Header Authorization).
+      servers:
+        - url: http://localhost:4002
+          description: Wallet Service
+      responses:
+        "200":
+          description: Saldo actual
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BalanceResponse"
+              examples:
+                ok:
+                  value:
+                    balance: 1500.0
+                    currency: USD
+        "403":
+          description: Token inválido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                invalidToken:
+                  value:
+                    message: "Token inválido"
+
+  /v1/deposit:
+    post:
+      tags: [Wallet Service]
+      summary: Depositar saldo
+      description: Añade saldo a la billetera del usuario actual. Simula un ingreso de dinero externo.
+      servers:
+        - url: http://localhost:4002
+          description: Wallet Service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DepositRequest"
+      responses:
+        "200":
+          description: Depósito aplicado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DepositResponse"
+              examples:
+                ok:
+                  value:
+                    success: true
+                    newBalance: 1600.0
+
+  /v1/transactions:
+    get:
+      tags: [Wallet Service]
+      summary: Historial de transacciones
+      description: Obtiene historial de transacciones del usuario del Token.
+      servers:
+        - url: http://localhost:4002
+          description: Wallet Service
+      responses:
+        "200":
+          description: Lista de transacciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+              examples:
+                ok:
+                  value:
+                    - id: "tx_123"
+                      amount: 100.0
+                      type: INCOME
+                      description: "Nota..."
+
+  /v1/transfer:
+    post:
+      tags: [Transaction Service]
+      summary: Transferir dinero
+      description: Envía dinero. El emisor es el usuario del Token. El receptor se especifica en el body.
+      servers:
+        - url: http://localhost:4003
+          description: Transaction Service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransferRequest"
+      responses:
+        "200":
+          description: Transferencia completada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferResponse"
+              examples:
+                ok:
+                  value:
+                    transactionId: "tx_456"
+                    status: COMPLETED
+        "400":
+          description: Fondos insuficientes o error de validación
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                insufficient:
+                  value:
+                    message: "Fondos insuficientes"

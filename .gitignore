@@ -1,0 +1,56 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Thumbs.db:encryptable
+
+# IDEs y Editores
+.idea/
+.vscode/
+*.swp
+*.iml
+*.suo
+*.eclipse
+*~
+
+# Maven & Java
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+*.class
+*.jar
+*.war
+
+# Dependencies & Node (Si usas Cypress o Playwright en el futuro)
+node_modules/
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Karate Framework / Testing
+karate-reports/
+target/surefire-reports/
+target/karate-reports/
+
+# Postman / Newman
+newman/
+
+# Entornos virtuales de Python (Si aplica en el futuro)
+venv/
+.env
+
+# Archivos de SO local
+desktop.ini

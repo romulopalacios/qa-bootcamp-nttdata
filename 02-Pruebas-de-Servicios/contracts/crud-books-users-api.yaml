@@ -1,0 +1,466 @@
+openapi: 3.0.0
+info:
+  title: CRUD Books and Users API
+  description: API documentation for managing books and users.
+  version: 1.0.0
+servers:
+  - url: http://161.97.160.7:3000/api
+paths:
+  /books:
+    get:
+      tags:
+        - Books
+      summary: Obtener todos los libros
+      description: Recuperar una lista de todos los libros.
+      responses:
+        '200':
+          description: Una lista de libros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+    post:
+      tags:
+        - Books
+      summary: Agregar un nuevo libro
+      description: Crear un nuevo registro de libro.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '201':
+          description: Libro creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+  /books/{id}:
+    get:
+      tags:
+        - Books
+      summary: Obtener un libro por ID
+      description: Recuperar detalles de un libro por su ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del libro
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalles del libro
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Libro no encontrado
+    put:
+      tags:
+        - Books
+      summary: Actualizar un libro
+      description: Actualizar los detalles de un libro existente.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del libro
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '200':
+          description: Libro actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Libro no encontrado
+    patch:
+      tags:
+        - Books
+      summary: Actualizar parcialmente un libro
+      description: Actualizar uno o más campos de un libro.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del libro
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartialBook'
+      responses:
+        '200':
+          description: Libro actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Libro no encontrado
+    delete:
+      tags:
+        - Books
+      summary: Eliminar un libro
+      description: Eliminar un libro por su ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del libro
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Libro eliminado exitosamente
+        '404':
+          description: Libro no encontrado
+  /users/login:
+    post:
+      tags:
+        - Users
+      summary: Iniciar sesión
+      description: Autenticar a un usuario y devolver un token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Usuario autenticado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: Token JWT
+        '401':
+          description: Credenciales inválidas
+  /users/register:
+    post:
+      tags:
+        - Users
+      summary: Registrar un nuevo usuario
+      description: Crear una nueva cuenta de usuario. Verifica que no exista un nombre de usuario duplicado.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '201':
+          description: Usuario registrado exitosamente
+        '400':
+          description: El nombre de usuario ya está registrado
+  /users/update:
+    put:
+      tags:
+        - Users
+      summary: Actualizar detalles del usuario
+      description: Actualizar los detalles del usuario autenticado.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: Usuario actualizado exitosamente
+      security:
+        - bearerAuth: []
+  /users/change-password:
+    put:
+      tags:
+        - Users
+      summary: Cambiar contraseña del usuario
+      description: Cambiar la contraseña del usuario autenticado.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserChangePassword'
+      responses:
+        '200':
+          description: Contraseña cambiada exitosamente
+      security:
+        - bearerAuth: []
+  /admin/users:
+    get:
+      tags:
+        - Administration
+      summary: Obtener todos los usuarios
+      description: Recuperar una lista de todos los usuarios.
+      responses:
+        '200':
+          description: Una lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /admin/users/{id}:
+    get:
+      tags:
+        - Administration
+      summary: Obtener un usuario por ID
+      description: Recuperar detalles de un usuario por su ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalles del usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Usuario no encontrado
+    delete:
+      tags:
+        - Administration
+      summary: Eliminar un usuario
+      description: Eliminar un usuario por su ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Usuario eliminado exitosamente
+        '404':
+          description: Usuario no encontrado
+  /admin/users/filter:
+    get:
+      tags:
+        - Administration
+      summary: Filtrar usuarios por estado
+      description: Recuperar usuarios filtrados por su estado (activo o inactivo).
+      parameters:
+        - name: status
+          in: query
+          required: true
+          description: Estado de los usuarios a filtrar (true para activos, false para inactivos)
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Lista de usuarios filtrados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /reading-tracker/{userId}:
+    get:
+      tags:
+        - Reading Tracker
+      summary: Obtener libros asociados a un usuario
+      description: Ver los libros leídos y solicitados por un usuario.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Datos de libros del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  read:
+                    type: array
+                    items:
+                      type: integer
+                    description: Lista de IDs de libros leídos
+                  requested:
+                    type: array
+                    items:
+                      type: integer
+                    description: Lista de IDs de libros solicitados
+        '404':
+          description: No se encontraron datos para este usuario
+    put:
+      tags:
+        - Reading Tracker
+      summary: Actualizar libros asociados a un usuario
+      description: Actualizar los libros leídos y solicitados por un usuario.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                read:
+                  type: array
+                  items:
+                    type: integer
+                  description: Lista de IDs de libros leídos
+                requested:
+                  type: array
+                  items:
+                    type: integer
+                  description: Lista de IDs de libros solicitados
+      responses:
+        '200':
+          description: Libros actualizados exitosamente
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único del libro
+        title:
+          type: string
+          description: Título del libro
+        author:
+          type: string
+          description: Autor del libro
+    PartialBook:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Título del libro
+        author:
+          type: string
+          description: Autor del libro
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador único del usuario
+        username:
+          type: string
+          description: Nombre de usuario
+        firstName:
+          type: string
+          description: Nombre del usuario
+        lastName:
+          type: string
+          description: Apellidos del usuario
+        phone:
+          type: string
+          description: Número de teléfono
+        birthday:
+          type: string
+          format: date
+          description: Fecha de nacimiento
+        active:
+          type: boolean
+          description: Si el usuario está activo o no
+    UserLogin:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Nombre de usuario
+        password:
+          type: string
+          description: Contraseña del usuario
+    UserRegistration:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Nombre de usuario deseado
+        password:
+          type: string
+          description: Contraseña deseada
+        firstName:
+          type: string
+          description: Nombre del usuario
+        lastName:
+          type: string
+          description: Apellidos del usuario
+        phone:
+          type: string
+          description: Número de teléfono
+        birthday:
+          type: string
+          format: date
+          description: Fecha de nacimiento
+    UserUpdate:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Nombre de usuario actualizado
+        firstName:
+          type: string
+          description: Nombre actualizado
+        lastName:
+          type: string
+          description: Apellidos actualizados
+        phone:
+          type: string
+          description: Número de teléfono actualizado
+        birthday:
+          type: string
+          format: date
+          description: Fecha de nacimiento actualizada
+        active:
+          type: boolean
+          description: Estado activo actualizado
+    UserChangePassword:
+      type: object
+      properties:
+        oldPassword:
+          type: string
+          description: Contraseña actual
+        newPassword:
+          type: string
+          description: Nueva contraseña

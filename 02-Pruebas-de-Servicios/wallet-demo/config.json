@@ -1,0 +1,6 @@
+{
+  "jwt_secret": "clave_secreta_super_segura_123",
+  "db_password": "password_local_admin",
+  "wallet_service_url": "http://wallet-ms:3000",
+  "app_port": 3000
+}

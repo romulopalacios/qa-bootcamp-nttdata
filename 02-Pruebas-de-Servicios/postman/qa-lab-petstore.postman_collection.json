@@ -1,0 +1,179 @@
+{
+	"info": {
+		"_postman_id": "a60fe448-9457-453f-b62d-55ec5b35f812",
+		"name": "QA Lab - Petstore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15307488",
+		"_collection_link": "https://blue-crater-503937.postman.co/workspace/IziApp~2aa8203f-fa58-48b1-a65b-c7ed261c5aa5/collection/15307488-a60fe448-9457-453f-b62d-55ec5b35f812?action=share&source=collection_link&creator=15307488"
+	},
+	"item": [
+		{
+			"name": "create-pet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Obtener información de la respuesta y almacenarla en una variable del Environment\r",
+							"let respuesta = pm.response.json()\r",
+							"pm.environment.set(\"idMascota\",respuesta.id)\r",
+							"\r",
+							"// Generar un test para verificar que el status code es 200.\r",
+							"let statusCodeRecibido = pm.response.code // devuelve el código de respuesta\r",
+							"let statusRecibido = pm.response.status // devuelve la descripción de la respuesta\r",
+							"\r",
+							"pm.test(\"Valida el status code es 200 cuando se envía un ID largo\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validar el ID generado de la mascota\", function () {\r",
+							"    pm.expect(pm.response.json()).to.be.an('object');\r",
+							"    pm.expect(pm.response.json().id).to.be.a('number');\r",
+							"    pm.expect(pm.response.json().id).to.be.above(0, \"ID should be a positive number\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 0,\r\n  \"category\": {\r\n    \"id\": 32,\r\n    \"name\": \"Peces\"\r\n  },\r\n  \"name\": \"Kimbo\",\r\n  \"photoUrls\": [\r\n    \"string\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 7,\r\n      \"name\": \"Acuáticos\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseURL}}/pet",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "consulta-mascota",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseURL}}/pet/{{idMascota}}",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"pet",
+						"{{idMascota}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 77,\r\n  \"username\": \"evalderrama\",\r\n  \"firstName\": \"Elias\",\r\n  \"lastName\": \"Valderrama\",\r\n  \"email\": \"elias@elias.com\",\r\n  \"password\": \"pass123\",\r\n  \"phone\": \"999111222\",\r\n  \"userStatus\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseURL}}/user",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update-pet",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": {{idMascota}},\n  \"category\": {\n    \"id\": 32,\n    \"name\": \"Felinos\"\n  },\n  \"name\": \"Julio\",\n  \"photoUrls\": [\n    \"string\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 7,\n      \"name\": \"Acuáticos\"\n    }\n  ],\n  \"status\": \"available\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseURL}}/pet",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "borrar-mascota",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BaseURL}}/pet/{{idMascota}}",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"pet",
+						"{{idMascota}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
